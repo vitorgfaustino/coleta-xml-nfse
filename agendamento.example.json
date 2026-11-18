@@ -1,0 +1,17 @@
+{
+  "pfx": "C:\\caminho\\certificado.pfx",
+  "password_file": "C:\\caminho\\senha.txt",
+  "cnpjs": [
+    "00.000.000/0001-91"
+  ],
+  "environment": "producao",
+  "filter": "Ambas",
+  "output": "C:\\caminho\\exports",
+  "period_start": "2026-01-01",
+  "period_end": "2026-12-31",
+  "emission_start": null,
+  "emission_end": null,
+  "start_nsu": 0,
+  "no_cache": false,
+  "max_pages": 10000
+}

@@ -1,0 +1,46 @@
+name: Pedido de recurso
+description: Proponha uma melhoria para o coletor, o leitor ou o build.
+title: "[Recurso]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema
+      description: Qual tarefa fica difícil hoje?
+      placeholder: "Hoje eu preciso..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposta
+    attributes:
+      label: Proposta
+      description: O que você gostaria que o app fizesse?
+    validations:
+      required: true
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas consideradas
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - Coletor
+        - Leitor
+        - Interface
+        - Build e release
+        - Documentação
+        - Outro
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacidade
+    attributes:
+      label: Confirmação
+      options:
+        - label: Não incluí dados fiscais reais nem credenciais.
+          required: true

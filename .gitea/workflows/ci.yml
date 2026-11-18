@@ -1,0 +1,65 @@
+# CI do Coleta XML NFSE para Gitea Actions.
+#
+# Requer runner com label ubuntu-latest e acesso ao espelho de Actions e ao
+# PyPI. Não publica release, não cria tag e não usa secrets.
+
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - beta
+      - "agents/**"
+      - "feature/**"
+  pull_request:
+    branches:
+      - develop
+      - main
+      - beta
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coleta-xml-nfse-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Testes unitários
+        run: python -m unittest discover -s tests -v
+
+      - name: Compilar Python
+        run: python -m compileall -q nfse nfse_app.py scripts build.py
+
+      - name: Sintaxe do JavaScript
+        run: |
+          if command -v node >/dev/null 2>&1; then
+            node --check web/app.js
+          else
+            echo "Node não está disponível na imagem; pulando a checagem de JS."
+          fi
+
+      - name: Gerar leitor estático
+        run: |
+          python scripts/build_pages.py
+          test -f pages/index.html

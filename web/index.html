@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <meta name="nfse-token" content="__NFSE_TOKEN__">
+  <meta name="nfse-version" content="__NFSE_VERSION__">
+  <title>Coleta XML NFSE | Coletor local</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/>
+            <path d="M14 3v6h5M9 14h6M9 18h4"/>
+          </svg>
+        </div>
+        <div>
+          <p class="eyebrow">Fiscal · NFS-e</p>
+          <h1>Coleta XML NFSE</h1>
+        </div>
+      </div>
+      <nav class="topnav" aria-label="Navegação principal">
+        <a href="/" aria-current="page">Coletor</a>
+        <a href="/leitor">Leitor de XML</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro">
+        <span class="intro-badge" title="O certificado e os XMLs ficam neste computador">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" rx="2"/>
+            <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+          </svg>
+          Processamento local
+        </span>
+        <h2>Baixe os XMLs do ADN sem enviar seu certificado para a nuvem</h2>
+        <p>
+          A consulta ao ADN (Ambiente Nacional da NFS-e) é feita diretamente deste computador,
+          com o certificado A1. O certificado, a senha e os XMLs não passam por servidores nossos.
+          O aplicativo aceita conexões apenas deste computador.
+        </p>
+      </section>
+
+      <form id="runForm" class="wizard-form" autocomplete="off" novalidate>
+        <aside class="stepper" aria-label="Etapas da consulta">
+          <ol>
+            <li data-step="0" class="current" aria-current="step">
+              <span class="num">1</span>
+              <div><b>Certificado</b><small>A1 e senha</small></div>
+            </li>
+            <li data-step="1">
+              <span class="num">2</span>
+              <div><b>Empresas</b><small>CNPJs autorizados</small></div>
+            </li>
+            <li data-step="2">
+              <span class="num">3</span>
+              <div><b>Consulta</b><small>Período e opções</small></div>
+            </li>
+            <li data-step="3">
+              <span class="num">4</span>
+              <div><b>Revisão</b><small>Conferir e baixar</small></div>
+            </li>
+          </ol>
+        </aside>
+
+        <div class="wizard-body">
+          <section class="step-panel" data-step="0">
+            <div class="card">
+              <div class="card-head">
+                <h3>Certificado A1</h3>
+                <span class="tag">.pfx ou .p12</span>
+              </div>
+              <div class="drop" id="certDrop" tabindex="0" role="button">
+                <input id="pfx" type="file" accept=".pfx,.p12,application/x-pkcs12" hidden>
+                <span class="drop-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 16V4m0 0L7 9m5-5 5 5"/>
+                    <path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/>
+                  </svg>
+                </span>
+                <strong id="certLabel">Selecione o certificado do procurador</strong>
+                <span class="hint">Lido a cada execução e mantido apenas neste processo local.</span>
+              </div>
+              <label class="field">
+                <span>Senha do certificado</span>
+                <input id="password" type="password" autocomplete="new-password" placeholder="Digite a senha do certificado">
+              </label>
+              <p class="note">A senha não é armazenada. O certificado não é gravado no disco.</p>
+            </div>
+          </section>
+
+          <section class="step-panel" data-step="1" hidden>
+            <div class="card">
+              <div class="card-head">
+                <h3>Empresas autorizadas</h3>
+                <span class="tag" id="cnpjCount">0 CNPJs</span>
+              </div>
+              <label class="field">
+                <span>Um CNPJ por linha</span>
+                <textarea id="cnpjs" rows="8" spellcheck="false" placeholder="00.000.000/0001-91&#10;12.ABC.345/01DE-35"></textarea>
+              </label>
+              <div class="row">
+                <button class="btn secondary" type="button" id="importCnpjs">Importar lista (.txt/.csv)</button>
+                <input id="cnpjFile" type="file" accept=".txt,.csv,text/plain,text/csv" hidden>
+                <button class="btn secondary" type="button" id="pasteCnpjs">Colar</button>
+                <button class="btn ghost" type="button" id="copyCnpjs">Copiar</button>
+              </div>
+              <p class="note" id="cnpjHint">A procuração deve estar vigente para o serviço da NFS-e.</p>
+              <p class="note">A lista e as opções são lembradas neste navegador. <button class="text-link" type="button" id="clearPrefs">Limpar</button></p>
+            </div>
+          </section>
+
+          <section class="step-panel" data-step="2" hidden>
+            <div class="card">
+              <div class="card-head">
+                <h3>Consulta</h3>
+                <span class="tag">Produção ou homologação</span>
+              </div>
+              <div class="two">
+                <label class="field">
+                  <span>Ambiente</span>
+                  <select id="environment">
+                    <option value="producao">Produção</option>
+                    <option value="restrita">Produção restrita (homologação)</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span>Documentos</span>
+                  <select id="filter">
+                    <option value="Ambas">Prestados e tomados</option>
+                    <option value="Prestados">Somente prestados</option>
+                    <option value="Tomados">Somente tomados</option>
+                  </select>
+                </label>
+              </div>
+              <div class="period-block">
+                <div class="period-mode-row">
+                  <label class="field">
+                    <span>Período</span>
+                    <select id="periodMode">
+                      <option value="all">Todo o período</option>
+                      <option value="range">Selecionar período</option>
+                    </select>
+                  </label>
+                  <p class="note" id="periodNote">Todo o período guarda os XMLs retornados. Ao selecionar, informe um ou os dois intervalos; XMLs fora deles não são guardados.</p>
+                </div>
+                <div class="period-ranges">
+                  <fieldset class="date-range">
+                    <legend>Competência</legend>
+                    <div class="two">
+                      <label class="field">
+                        <span>De</span>
+                        <input id="periodStart" type="date" disabled>
+                      </label>
+                      <label class="field">
+                        <span>Até</span>
+                        <input id="periodEnd" type="date" disabled>
+                      </label>
+                    </div>
+                  </fieldset>
+                  <fieldset class="date-range">
+                    <legend>Emissão</legend>
+                    <div class="two">
+                      <label class="field">
+                        <span>De</span>
+                        <input id="emissionStart" type="date" disabled>
+                      </label>
+                      <label class="field">
+                        <span>Até</span>
+                        <input id="emissionEnd" type="date" disabled>
+                      </label>
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
+              <label class="check">
+                <input id="noCache" type="checkbox">
+                <span>
+                  <b>Não guardar cópia local</b>
+                  <small>Ao final, o app apaga os XMLs baixados, o histórico da última consulta e os logs. A próxima execução baixa tudo de novo.</small>
+                </span>
+              </label>
+              <details class="advanced">
+                <summary>Opções avançadas</summary>
+                <label class="field">
+                  <span>NSU inicial (opcional)</span>
+                  <input id="startNsu" type="number" min="0" step="1" placeholder="Ex.: 1000">
+                </label>
+                <p class="note">Usado apenas no primeiro download de cada CNPJ, quando ainda não há histórico salvo. O ADN entrega por NSU; o período controla o que é guardado.</p>
+              </details>
+            </div>
+          </section>
+
+          <section class="step-panel" data-step="3" hidden>
+            <div class="card">
+              <div class="card-head">
+                <h3>Revisão</h3>
+                <span class="tag">Confira antes de baixar</span>
+              </div>
+              <p class="note">Confira o resumo. Ao confirmar, o download começa e pode ser acompanhado abaixo. Os XMLs fora do período não serão guardados.</p>
+              <div class="review-strip" id="reviewStrip">
+                <span class="review-label">Resumo</span>
+                <div class="chips" id="reviewChips"></div>
+              </div>
+            </div>
+          </section>
+
+          <div id="formError" class="error" role="alert" hidden></div>
+          <div class="wizard-actions">
+            <button class="btn secondary" type="button" id="wizardBack" hidden>Voltar</button>
+            <button class="btn primary" type="button" id="wizardNext">Continuar</button>
+            <button class="btn primary" type="submit" id="start" hidden>Confirmar e baixar</button>
+            <button class="btn secondary" type="button" id="cancel" hidden>Cancelar</button>
+          </div>
+        </div>
+      </form>
+
+      <section id="statusCard" class="card status-card" hidden>
+        <div class="status-head">
+          <div>
+            <p class="eyebrow">Execução</p>
+            <h3 id="statusTitle" aria-live="polite">Preparando…</h3>
+          </div>
+          <span class="status-pill" id="statusPill">Em andamento</span>
+        </div>
+        <div class="progress" id="progress"><span></span></div>
+        <div class="metrics" id="resultMetrics" hidden>
+          <div class="metric"><span>Novos</span><b id="mNew">0</b></div>
+          <div class="metric"><span>Exportados</span><b id="mExported">0</b></div>
+          <div class="metric"><span>Empresas</span><b id="mClients">0</b></div>
+          <div class="metric"><span>Erros</span><b id="mFailures">0</b></div>
+        </div>
+        <p class="note result-note" id="resultNote" hidden></p>
+        <div class="actions" id="resultActions" hidden>
+          <button class="btn primary" type="button" id="openReader" hidden>Abrir no leitor</button>
+          <a class="btn secondary" id="downloadZip" href="#" download>Baixar ZIP</a>
+          <button class="btn secondary" type="button" id="revealData">Abrir pasta do app</button>
+          <button class="btn danger" type="button" id="wipeData">Apagar dados do app</button>
+        </div>
+        <pre id="log" class="log" aria-label="Log da execução" tabindex="0"></pre>
+      </section>
+
+      <section class="reader-cta">
+        <div>
+          <p class="eyebrow">Leitor de XML</p>
+          <h3>Já baixou os XMLs? Analise no navegador.</h3>
+          <p>Veja emitente, valores, cancelamentos e itens. Aceita XML avulso, uma pasta ou o ZIP do coletor.</p>
+        </div>
+        <a class="btn secondary reader-link" href="/leitor">Abrir leitor de XML</a>
+      </section>
+
+      <section class="info-grid">
+        <article class="card">
+          <h3>O que fica salvo neste computador</h3>
+          <p>
+            Por padrão, o app mantém uma cópia dos XMLs e a posição da última consulta
+            para não baixar tudo de novo. A senha não é salva. A lista de CNPJs e as
+            opções de consulta ficam lembradas apenas neste navegador.
+          </p>
+          <dl class="facts">
+            <div><dt>Pasta do app</dt><dd id="dataDir">Carregando...</dd></div>
+            <div><dt>Cópia local</dt><dd id="cacheInfo">Carregando...</dd></div>
+            <div><dt>Última execução</dt><dd id="lastRun">—</dd></div>
+            <div><dt>Conexão</dt><dd>127.0.0.1 (somente este computador)</dd></div>
+          </dl>
+          <div class="row">
+            <button class="text-link" type="button" id="revealDataInfo">Abrir pasta do app</button>
+            <button class="text-link danger-link" type="button" id="wipeDataInfo">Apagar dados do app</button>
+          </div>
+        </article>
+        <article class="card">
+          <h3>Privacidade por padrão</h3>
+          <ul class="checklist">
+            <li>O certificado e a senha não são enviados para servidores nossos.</li>
+            <li>A única conexão externa é com o ADN.</li>
+            <li>O leitor de XML processa tudo no navegador.</li>
+            <li>Você pode apagar os dados do app a qualquer momento.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="tools-grid">
+        <article class="card">
+          <div class="card-head">
+            <h3>Cópia local</h3>
+            <span class="tag" id="cacheTag">0 CNPJs</span>
+          </div>
+          <p class="note">O backup inclui os XMLs e o histórico de NSU. Restaurar substitui a cópia local atual.</p>
+          <div class="cache-list" id="cacheList"><p class="note">Nenhum XML salvo.</p></div>
+          <div class="row">
+            <button class="btn secondary" type="button" id="backupCache">Baixar backup</button>
+            <button class="btn secondary" type="button" id="restoreCache">Restaurar backup</button>
+            <input id="restoreFile" type="file" accept=".zip,application/zip" hidden>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <h3>Histórico</h3>
+            <span class="tag" id="historyCount">0</span>
+          </div>
+          <div class="history-list" id="historyList"><p class="note">Nenhuma execução registrada.</p></div>
+        </article>
+      </section>
+
+      <section class="card diagnostics-card">
+        <div class="card-head">
+          <h3>Diagnóstico</h3>
+          <button class="btn secondary" type="button" id="runDiagnostics">Executar</button>
+        </div>
+        <p class="note">Verifica pastas, cache, proxy configurado e conexão básica com o ADN. O certificado é validado na execução.</p>
+        <pre id="diagnosticResult" class="log" hidden></pre>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-copy">
+        <span>Versão <span id="version">__NFSE_VERSION__</span> · Execução local</span>
+        <p class="footer-def"><b>ADN</b> é o Ambiente Nacional da NFS-e: o serviço da Receita Federal que guarda e entrega os XMLs das notas de serviço. O coletor consulta esse ambiente por NSU.</p>
+        <p class="footer-meta">Licença MIT · Criado por <strong>Vitor Faustino</strong> · <a href="https://github.com/vitorgfaustino/coleta-xml-nfse" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+      </div>
+      <button class="text-link" type="button" id="quitApp">Encerrar aplicativo</button>
+    </footer>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

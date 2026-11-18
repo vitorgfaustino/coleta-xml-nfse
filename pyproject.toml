@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coleta-xml-nfse"
+version = "0.2.0"
+description = "Coletor local de XML da NFS-e Nacional (ADN), com certificado A1."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+  "requests>=2.32,<3",
+  "cryptography>=44,<47",
+]
+
+[project.scripts]
+nfse = "nfse.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["nfse*"]

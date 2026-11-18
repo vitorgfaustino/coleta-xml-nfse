@@ -1,0 +1,87 @@
+name: Relatar bug
+description: Relate um problema reproduzível no aplicativo ou no leitor.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Não inclua PFX, senha, CNPJ real, CPF, chave de acesso ou XML.
+        Use dados sintéticos e remova informações pessoais dos logs.
+  - type: textarea
+    id: descricao
+    attributes:
+      label: Descrição
+      description: O que aconteceu, em uma ou duas frases.
+      placeholder: "Ao clicar em Baixar XMLs, a execução para com..."
+    validations:
+      required: true
+  - type: textarea
+    id: passos
+    attributes:
+      label: Passos para reproduzir
+      description: Liste os passos na ordem.
+      placeholder: |
+        1. Abrir o aplicativo
+        2. Selecionar um PFX de teste
+        3. Informar um CNPJ de teste
+        4. Clicar em Baixar XMLs
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Resultado esperado
+    validations:
+      required: true
+  - type: textarea
+    id: obtido
+    attributes:
+      label: Resultado obtido
+    validations:
+      required: true
+  - type: input
+    id: versao
+    attributes:
+      label: Versão do app
+      description: Rodapé da tela ou saída de `python nfse_app.py --version`.
+      placeholder: "0.2.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: sistema
+    attributes:
+      label: Sistema operacional
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS 15
+        - macOS 14
+        - macOS 13
+        - Linux
+        - Outro
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Versão do Python
+      description: Saída de `python --version` ou `python3 --version`.
+      placeholder: "3.12.7"
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Cole o trecho relevante. Remova CNPJs, CPFs, nomes, valores e chaves.
+      render: text
+    validations:
+      required: false
+  - type: checkboxes
+    id: privacidade
+    attributes:
+      label: Confirmação
+      options:
+        - label: Não incluí PFX, senha, CNPJ real, CPF, chave de acesso ou XML.
+          required: true

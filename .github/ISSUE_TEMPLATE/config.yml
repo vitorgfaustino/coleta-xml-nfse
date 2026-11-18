@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Segurança
+    url: https://github.com/vitorgfaustino/coleta-xml-nfse/security/advisories/new
+    about: Relate vulnerabilidades em privado.
+  - name: Documentação
+    url: https://github.com/vitorgfaustino/coleta-xml-nfse#readme
+    about: Leia o README antes de abrir uma issue.

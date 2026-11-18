@@ -1,0 +1,13 @@
+{
+  "name": "coleta-xml-nfse-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Testes de interface do Coleta XML NFSE.",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.1"
+  }
+}

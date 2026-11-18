@@ -1,0 +1,73 @@
+# Release Python a partir da branch main.
+#
+# O Gitea pode espelhar a main para o GitHub. Quando o push chegar ao GitHub,
+# este workflow gera o ZIP de distribuição e publica uma release prévia.
+# Não publica .exe/.app, não assina binários e não usa secrets próprios.
+
+name: Release Python ZIP
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-python-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: python -m pip install -r requirements.txt
+
+      - name: Testes
+        run: python -m unittest discover -s tests -q
+
+      - name: Gerar ZIP Python
+        id: package
+        run: |
+          set -euo pipefail
+          VERSION="$(python -c 'from nfse.version import __version__; print(__version__)')"
+          SHORT_SHA="${GITHUB_SHA::7}"
+          TAG="v${VERSION}-${SHORT_SHA}"
+          TITLE="Coleta XML NFSE ${VERSION} (${SHORT_SHA})"
+          OUTPUT="dist/ColetaXMLNFSE-${VERSION}-${SHORT_SHA}.zip"
+          python scripts/export_source_zip.py --output "$OUTPUT"
+          {
+            echo "tag=$TAG"
+            echo "title=$TITLE"
+            echo "output=$OUTPUT"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Publicar release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.package.outputs.tag }}"
+          TITLE="${{ steps.package.outputs.title }}"
+          OUTPUT="${{ steps.package.outputs.output }}"
+          CHECKSUM="${OUTPUT}.sha256"
+          NOTES="Pacote Python do Coleta XML NFSE. Requer Python 3.10 ou superior. Não contém .exe/.app nem dados locais. Confira o SHA-256 antes de usar."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$OUTPUT" "$CHECKSUM" --clobber
+            gh release edit "$TAG" --title "$TITLE" --notes "$NOTES" --prerelease
+          else
+            gh release create "$TAG" "$OUTPUT" "$CHECKSUM" \
+              --target "$GITHUB_SHA" \
+              --title "$TITLE" \
+              --notes "$NOTES" \
+              --prerelease
+          fi

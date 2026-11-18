@@ -15,10 +15,17 @@ Não há release de binários, workflow de build nativo ou secrets de assinatura
 
 ## Como outras pessoas usam
 
-1. Instalam Python 3.10 ou superior.
-2. Clonam ou baixam este repositório.
-3. Executam `instalar.bat`/`instalar.command` na primeira vez.
-4. Executam `iniciar.bat`/`iniciar.command`.
+1. Baixam o ZIP da release pública no GitHub.
+2. Instalam Python 3.10 ou superior.
+3. Extraem o ZIP e executam `iniciar.bat`/`iniciar.command`.
+
+O `iniciar` cria o ambiente e instala as dependências na primeira execução.
+`tools/instalar` é opcional. Desenvolvedores clonam o repositório; usuários finais
+não precisam clonar.
+
+A release é criada no **GitHub** pelo workflow `.github/workflows/release.yml`
+quando a `main` sincronizada chega ao repositório. O Gitea não publica uma
+release separada.
 
 O guia completo está em [USO.md](USO.md).
 
@@ -28,6 +35,7 @@ O guia completo está em [USO.md](USO.md).
 - `.app`/DMG macOS.
 - ZIP de executável.
 - Release de binário.
+- Release no Gitea.
 - Atualização automática.
 
 `build.py` e `scripts/package.py` continuam no repositório apenas como

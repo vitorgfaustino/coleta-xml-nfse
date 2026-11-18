@@ -2,8 +2,14 @@
 
 ## Escolha o modo
 
-O projeto é distribuído **como código Python**, sem `.exe` ou `.app`. Isso evita
-a necessidade de certificado de assinatura pago e mantém o app transparente.
+Se você **só quer usar**, baixe o ZIP da release pública:
+<https://github.com/vitorgfaustino/coleta-xml-nfse/releases/latest>. Não clone o
+repositório para isso.
+
+Se você quer **desenvolver**, clone o repositório. O projeto é distribuído como
+código Python, sem `.exe` ou `.app`. Isso evita certificado de assinatura pago e
+mantém o app transparente. A release pública é gerada no GitHub; o Gitea é o
+ambiente de desenvolvimento.
 
 | Perfil | Caminho |
 |---|---|

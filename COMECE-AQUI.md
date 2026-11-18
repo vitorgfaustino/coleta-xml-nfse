@@ -3,6 +3,11 @@
 O **Coleta XML NFSE** roda no seu computador. Não há `.exe` ou `.app` para
 baixar: o aplicativo usa Python 3.10 ou superior.
 
+Se você recebeu este projeto como um ZIP de release, ele já é o pacote de uso.
+Não é necessário clonar o repositório. Se veio do GitHub/Gitea, prefira baixar
+o ZIP da release atual em:
+<https://github.com/vitorgfaustino/coleta-xml-nfse/releases/latest>.
+
 ## O que você precisa
 
 - Windows 10/11 ou macOS 13+.

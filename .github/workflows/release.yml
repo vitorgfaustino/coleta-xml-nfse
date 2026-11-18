@@ -1,7 +1,7 @@
 # Release Python a partir da branch main.
 #
 # O Gitea pode espelhar a main para o GitHub. Quando o push chegar ao GitHub,
-# este workflow gera o ZIP de distribuição e publica uma release prévia.
+# este workflow gera o ZIP de distribuição e publica a release atual.
 # Não publica .exe/.app, não assina binários e não usa secrets próprios.
 
 name: Release Python ZIP
@@ -63,11 +63,11 @@ jobs:
           NOTES="Pacote Python do Coleta XML NFSE. Requer Python 3.10 ou superior. Não contém .exe/.app nem dados locais. Confira o SHA-256 antes de usar."
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "$OUTPUT" "$CHECKSUM" --clobber
-            gh release edit "$TAG" --title "$TITLE" --notes "$NOTES" --prerelease
+            gh release edit "$TAG" --title "$TITLE" --notes "$NOTES" --latest
           else
             gh release create "$TAG" "$OUTPUT" "$CHECKSUM" \
               --target "$GITHUB_SHA" \
               --title "$TITLE" \
               --notes "$NOTES" \
-              --prerelease
+              --latest
           fi

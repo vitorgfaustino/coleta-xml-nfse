@@ -6,6 +6,33 @@ Repositório: <https://github.com/vitorgfaustino/coleta-xml-nfse>
 
 Licença MIT · Criado por Vitor Faustino.
 
+## Você quer usar ou desenvolver?
+
+Este repositório é para quem deseja **desenvolver, auditar ou contribuir** com o
+código. Se você só quer baixar e usar o aplicativo, não precisa clonar o projeto.
+
+<p>
+  <a href="https://github.com/vitorgfaustino/coleta-xml-nfse/releases/latest">
+    <img alt="Baixar ZIP da versão atual" src="https://img.shields.io/badge/Baixar%20ZIP-da%20release%20atual-2859d8?style=for-the-badge">
+  </a>
+  <a href="docs/USO.md">
+    <img alt="Abrir guia de uso" src="https://img.shields.io/badge/Guia-como%20usar-344054?style=for-the-badge">
+  </a>
+</p>
+
+| Eu quero... | Caminho |
+|---|---|
+| Apenas usar o aplicativo | Baixe o **ZIP da release**, extraia e execute `iniciar.bat`/`iniciar.command` |
+| Desenvolver ou contribuir | Clone este repositório e siga [docs/USO.md](docs/USO.md) |
+
+O ZIP da release é uma distribuição **Python**: exige Python 3.10 ou superior e
+não é um `.exe`/`.app`. Não é necessário comprar certificado de assinatura. O
+ZIP contém apenas o runtime, o guia `COMECE-AQUI.md`, licença e dependências.
+
+A release pública é gerada no **GitHub** depois que a `main` do Gitea é
+sincronizada. O Gitea é o ambiente de desenvolvimento; ele não publica uma
+release separada.
+
 O certificado e os XMLs não passam por servidor do projeto. A única conexão externa é com o ADN.
 
 **Licença MIT · Python 3.10+ · Windows e macOS**
@@ -216,7 +243,7 @@ Python**, usando os launchers e o guia [docs/USO.md](docs/USO.md).
 - `CI` roda testes, compilação, JS e leitor estático.
 - `E2E` roda os testes Playwright em pull request e por `workflow_dispatch`.
 - `Release Python ZIP` roda quando a `main` é sincronizada e publica o ZIP
-  Python com SHA-256 como pré-release. Não gera `.exe`/`.app`.
+  Python com SHA-256 como release atual (`latest`). Não gera `.exe`/`.app`.
 
 Testes E2E locais:
 

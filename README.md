@@ -1,6 +1,6 @@
 # Coleta XML NFSE
 
-Coletor local de XML da NFS-e Nacional (ADN) com certificado A1. Roda no Windows e no macOS, em `127.0.0.1`. Inclui um leitor de XML que processa tudo no navegador.
+Coletor local de XML da NFS-e Nacional (ADN) com certificado A1. Roda no Windows e no macOS, em `127.0.0.1`. Inclui um leitor de XML que processa tudo no navegador..
 
 Repositório: <https://github.com/vitorgfaustino/coleta-xml-nfse>
 
